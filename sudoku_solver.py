@@ -46,6 +46,9 @@ class Board(object):
     def get_cell(self, x, y):
         return self.cells_map[x][y]
 
+    def get_constraints(self):
+        return self.constraints.copy()
+
     def verify(self):
         return sum(cons.verify() for cons in self.constraints) == len(self.constraints)
 
@@ -126,6 +129,18 @@ class Constraint(object):
         if old_v is not None:
             self.unused_values.add(old_v)
 
+    def crank(self):
+        solved = False
+        for v in self.unused_values.copy():
+            v_cells = set()
+            for cell in self.cells:
+                if v in cell.possible_vs():
+                    v_cells.add(cell)
+            if len(v_cells) == 1:
+                v_cells.pop().set_v(v)
+                solved = True
+        return solved
+
 def main():
     b = Board()
 
@@ -155,6 +170,10 @@ def main():
             for y in xrange(0, 9):
                 if b.get_cell(x, y).crank():
                     crank_worked = True
+
+        for cons in b.get_constraints():
+            if cons.crank():
+                crank_worked = True
 
         # are we done?
         done = True
