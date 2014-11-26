@@ -75,6 +75,15 @@ class Board(object):
         assert self.verify(), 'Board did not pass constraints'
         return all(cell.get_v() is not None for cell in self.cells)
 
+    # Equivalence is based only on whether cell values match. Constraints are
+    # not considered.
+    def __eq__(self, o):
+        for x in xrange(0, 9):
+            for y in xrange(0, 9):
+                if self.get_cell(x, y).get_v() != o.get_cell(x, y).get_v():
+                    return False
+        return True
+
     def __str__(self):
         ls = []
         for y in xrange(0, 9):
