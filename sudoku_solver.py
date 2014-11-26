@@ -3,6 +3,26 @@
 import sys
 
 class Board(object):
+    @staticmethod
+    def FromFile(f):
+        b = Board()
+
+        y = 0
+        for l in f.xreadlines():
+            l = l.rstrip()
+            assert len(l) == 9, 'expected 9 characters per line'
+
+            for (x, v) in enumerate(l):
+                if v in '_':
+                    continue
+                v = int(v)
+                assert 1 <= v <= 9, 'invalid v encountered: %d' % v
+                b.get_cell(x, y).set_v(v)
+            y += 1
+        assert y == 9, 'expected 9 lines of input'
+
+        return b
+
     def __init__(self):
         # create cells
         self.cells = set()
@@ -142,21 +162,7 @@ class Constraint(object):
         return solved
 
 def main():
-    b = Board()
-
-    y = 0
-    for l in sys.stdin.xreadlines():
-        l = l.rstrip()
-        assert len(l) == 9, 'expected 9 characters per line'
-
-        for (x, v) in enumerate(l):
-            if v in '_':
-                continue
-            v = int(v)
-            assert 1 <= v <= 9, 'invalid v encountered: %d' % v
-            b.get_cell(x, y).set_v(v)
-        y += 1
-    assert y == 9, 'expected 9 lines of input'
+    b = Board.FromFile(sys.stdin)
 
     print 'Input:'
     print b
