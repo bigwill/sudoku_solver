@@ -50,7 +50,7 @@ class Board(object):
         return self.constraints.copy()
 
     def verify(self):
-        return sum(cons.verify() for cons in self.constraints) == len(self.constraints)
+        return all(cons.verify() for cons in self.constraints)
 
     def __str__(self):
         ls = []
