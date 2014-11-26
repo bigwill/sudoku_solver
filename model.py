@@ -99,7 +99,8 @@ class Cell(object):
         self.v = v
         self.constraints = set()
 
-    # Cells and constraints become related via the _add_cell(..) method on Constraint.
+    # Cells and constraints become related via the _add_cell(..) method on Constraint, which calls into
+    # here to setup a back point from cell to constraint.
     def _add_constraint(self, cons):
         assert cons.contains_cell(self), 'A cell cannot add a constraint to which it is not a member'
         self.constraints.add(cons)
