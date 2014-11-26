@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from model import Board
-from solver import solve
+from solver import solve_board
 import sys
 
 def usage():
@@ -18,15 +18,19 @@ def main():
     with open(sys.argv[2]) as f:
         b_expected = Board.FromFile(f)
 
+    print
     print 'Input:'
+    print
     print b_in
     print
 
-    solve(b_in)
+    solve_board(b_in)
 
     print
     print 'Solution:'
+    print
     print b_in
+    print
 
     assert b_in == b_expected, 'board does not match expected result'
 

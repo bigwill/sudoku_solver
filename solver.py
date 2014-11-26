@@ -1,3 +1,5 @@
+from collections import deque
+
 def solve_cell(cell):
     if cell.get_v():
         return False
@@ -21,7 +23,7 @@ def solve_constraint(cons):
             solved = True
     return solved
 
-def solve(b):
+def solve_board(b):
     progress = True
     while progress:
         progress = False
@@ -35,4 +37,5 @@ def solve(b):
                 progress = True
 
         if b.is_solved():
-            return
+            return True
+    return False
