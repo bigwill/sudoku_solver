@@ -66,11 +66,18 @@ class Board(object):
     def get_cell(self, x, y):
         return self.cells_map[x][y]
 
+    def get_cells(self):
+        return self.cells.copy()
+
     def get_constraints(self):
         return self.constraints.copy()
 
     def verify(self):
         return all(cons.verify() for cons in self.constraints)
+
+    def is_solved(self):
+        assert self.verify(), 'Board did not pass constraints'
+        return all(cell.get_v() is not None for cell in self.cells)
 
     def __str__(self):
         ls = []
@@ -108,17 +115,6 @@ class Cell(object):
     def get_v(self):
         return self.v
 
-    def crank(self):
-        if self.get_v():
-            return False
-
-        possibles = self.possible_vs()
-        if len(possibles) == 1:
-            self.set_v(possibles.pop())
-            return True
-        else:
-            return False
-
 class Constraint(object):
     def __init__(self, cells):
         self.unused_values = set(xrange(1, 10))
@@ -129,6 +125,9 @@ class Constraint(object):
 
     def contains_cell(self, cell):
         return cell in self.cells
+
+    def get_cells(self):
+        return self.cells.copy()
 
     def verify(self):
         used_values = set()
@@ -149,17 +148,44 @@ class Constraint(object):
         if old_v is not None:
             self.unused_values.add(old_v)
 
-    def crank(self):
-        solved = False
-        for v in self.unused_values.copy():
-            v_cells = set()
-            for cell in self.cells:
-                if v in cell.possible_vs():
-                    v_cells.add(cell)
-            if len(v_cells) == 1:
-                v_cells.pop().set_v(v)
-                solved = True
-        return solved
+def solve_cell(cell):
+    if cell.get_v():
+        return False
+
+    possibles = cell.possible_vs()
+    if len(possibles) == 1:
+        cell.set_v(possibles.pop())
+        return True
+    else:
+        return False
+
+def solve_constraint(cons):
+    solved = False
+    for v in cons.unused_values.copy():
+        v_cells = set()
+        for cell in cons.get_cells():
+            if v in cell.possible_vs():
+                v_cells.add(cell)
+        if len(v_cells) == 1:
+            v_cells.pop().set_v(v)
+            solved = True
+    return solved
+
+def solve(b):
+    progress = True
+    while progress:
+        progress = False
+
+        for cell in b.get_cells():
+            if solve_cell(cell):
+                progress = True
+
+        for cons in b.get_constraints():
+            if solve_constraint(cons):
+                progress = True
+
+        if b.is_solved():
+            return
 
 def main():
     b = Board.FromFile(sys.stdin)
@@ -168,33 +194,11 @@ def main():
     print b
     print
 
-    crank_worked = True
-    while crank_worked:
-        crank_worked = False
-
-        for x in xrange(0, 9):
-            for y in xrange(0, 9):
-                if b.get_cell(x, y).crank():
-                    crank_worked = True
-
-        for cons in b.get_constraints():
-            if cons.crank():
-                crank_worked = True
-
-        # are we done?
-        done = True
-        for x in xrange(0, 9):
-            for y in xrange(0, 9):
-                if b.get_cell(x, y).get_v() is None:
-                    done = False
-
-        if done:
-            break
+    solve(b)
 
     print
     print 'Solution:'
     print b
-    assert b.verify(), 'Board b did not pass constraints'
 
 if __name__ == "__main__":
     main()
