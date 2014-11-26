@@ -102,7 +102,7 @@ class Constraint(object):
         self.cells = set()
         for cell in cells:
             self._add_cell(cell)
-        assert len(self.cells) == 9, 'Expected exactly 9 cells in constraint group, got %' % len(self.cells)
+        assert len(self.cells) == 9, 'Expected exactly 9 cells in constraint group, got %d' % len(self.cells)
 
     def contains_cell(self, cell):
         return cell in self.cells
