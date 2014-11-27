@@ -1,5 +1,3 @@
-from collections import deque
-
 def solve_cell(cell):
     if cell.get_v():
         return False
@@ -23,6 +21,27 @@ def solve_constraint(cons):
             solved = True
     return solved
 
+def solve_search_board(b):
+    cells = sorted((cell for cell in b.get_cells() if cell.get_v() is None), key=lambda cell: len(cell.possible_vs()))
+    if not cells:
+        return False
+
+    cell = cells[0]
+
+    for possible_v in cell.possible_vs():
+        cell.set_v(possible_v)
+        if b.verify():
+            if b.is_solved():
+                return True
+            solved = solve_search_board(b)
+            if solved:
+                return True
+            else:
+                cell.set_v(None)
+        else:
+            cell.set_v(None)
+    return False
+
 def solve_board(b):
     progress = True
     while progress:
@@ -38,4 +57,8 @@ def solve_board(b):
 
         if b.is_solved():
             return True
-    return False
+
+    if solve_search_board(b):
+        return True
+    else:
+        return False
