@@ -1,6 +1,6 @@
 class Board(object):
     @staticmethod
-    def FromFile(f):
+    def from_file(f):
         b = Board()
 
         y = 0

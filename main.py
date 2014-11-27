@@ -13,11 +13,11 @@ def main():
         sys.exit(-1)
 
     with open(sys.argv[1]) as f:
-        b_in = Board.FromFile(f)
+        b_in = Board.from_file(f)
 
     if len(sys.argv) == 3:
         with open(sys.argv[2]) as f:
-            b_exp = Board.FromFile(f)
+            b_exp = Board.from_file(f)
     else:
         b_exp = None
 

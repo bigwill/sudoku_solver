@@ -5,9 +5,9 @@ import unittest
 class SolverTestCase(unittest.TestCase):
     def _test_from_files(self, in_file_path, out_file_path):
         with open(in_file_path) as f:
-            b_in = Board.FromFile(f)
+            b_in = Board.from_file(f)
         with open(out_file_path) as f:
-            b_out = Board.FromFile(f)
+            b_out = Board.from_file(f)
 
         solve_board(b_in)
 
