@@ -8,31 +8,27 @@ def usage():
     print "%s [input board file] [expected board file]" % sys.argv[0]
 
 def main():
-    if len(sys.argv) != 3:
+    if not 2 <= len(sys.argv) <= 3:
         usage()
         sys.exit(-1)
 
     with open(sys.argv[1]) as f:
         b_in = Board.FromFile(f)
 
-    with open(sys.argv[2]) as f:
-        b_expected = Board.FromFile(f)
+    if len(sys.argv) == 3:
+        with open(sys.argv[2]) as f:
+            b_exp = Board.FromFile(f)
+    else:
+        b_exp = None
 
-    print
-    print 'Input:'
-    print
-    print b_in
-    print
+    print '\nInput:\n\n', b_in, '\n'
 
     solve_board(b_in)
 
-    print
-    print 'Solution:'
-    print
-    print b_in
-    print
+    print '\nSolution:\n\n', b_in, '\n'
 
-    assert b_in == b_expected, 'board does not match expected result'
+    if b_exp:
+        assert b_in == b_exp, 'board does not match expected result'
 
 if __name__ == "__main__":
     main()
