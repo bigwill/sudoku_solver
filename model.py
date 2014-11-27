@@ -112,7 +112,7 @@ class Cell(object):
         return possible
 
     def set_v(self, v):
-        assert v is None or v in self.possible_vs(), 'Cannot set v to %d, it does not satisfy constraints at pos (%d, %d)' % (v, self.x, self.y)
+        assert v is None or v in self.possible_vs(), 'Cannot set v to %s, it does not satisfy constraints at pos (%d, %d) possibles = %s' % (v, self.x, self.y, self.possible_vs())
         old_v = self.v
         self.v = v
         for cons in self.constraints:
@@ -149,7 +149,8 @@ class Constraint(object):
             cell._add_constraint(self)
 
     def _cell_modified(self, cell, old_v):
-        assert cell.v in self.unused_values, 'Cell set to value %d, but that is not allowed by this constraint' % cell.v
-        self.unused_values.remove(cell.v)
+        assert cell.v is None or cell.v in self.unused_values, 'Cell set to value %d, but that is not allowed by this constraint' % cell.v
+        if cell.v is not None:
+            self.unused_values.remove(cell.v)
         if old_v is not None:
             self.unused_values.add(old_v)
