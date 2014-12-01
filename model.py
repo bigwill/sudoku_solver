@@ -27,7 +27,7 @@ class Board(object):
         for i in xrange(0, 9):
             self.cells_map[i] = {}
             for j in xrange(0, 9):
-                cell = Cell((i, j))
+                cell = Cell(i, j)
                 self.cells_map[i][j] = cell
                 self.cells.add(cell)
 
@@ -78,11 +78,7 @@ class Board(object):
     # Equivalence is based only on whether cell values match. Constraints are
     # not considered.
     def __eq__(self, o):
-        for x in xrange(0, 9):
-            for y in xrange(0, 9):
-                if self.get_cell(x, y).get_v() != o.get_cell(x, y).get_v():
-                    return False
-        return True
+        return all(self.get_cell(x, y).get_v() == o.get_cell(x, y).get_v() for x in xrange(0, 9) for y in xrange(0, 9))
 
     def __str__(self):
         ls = []
@@ -93,14 +89,14 @@ class Board(object):
         return '\n'.join(ls)
 
 class Cell(object):
-    def __init__(self, p, v=None):
-        self.x = p[0]
-        self.y = p[1]
+    def __init__(self, x, y, v=None):
+        self.x = x
+        self.y = y
         self.v = v
         self.constraints = set()
 
     # Cells and constraints become related via the _add_cell(..) method on Constraint, which calls into
-    # here to setup a back point from cell to constraint.
+    # here to setup a back pointer from cell to constraint.
     def _add_constraint(self, cons):
         assert cons.contains_cell(self), 'A cell cannot add a constraint to which it is not a member'
         self.constraints.add(cons)
