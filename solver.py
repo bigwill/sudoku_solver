@@ -7,14 +7,11 @@ def solve_board(b):
 
     for possible_v in cell.possible_vs():
         cell.set_v(possible_v)
-        if b.verify():
-            if b.is_solved():
-                return True
-            solved = solve_board(b)
-            if solved:
-                return True
-            else:
-                cell.set_v(None)
+        if b.is_solved():
+            return True
+        solved = solve_board(b)
+        if solved:
+            return True
         else:
             cell.set_v(None)
     return False
