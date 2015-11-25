@@ -39,3 +39,6 @@ class SolverTestCase(unittest.TestCase):
 
     def test_hardest1(self):
         self._test_from_files('test_boards/hardest/1.in', 'test_boards/hardest/1.out')
+
+    def test_hardest2(self):
+        self._test_from_files('test_boards/hardest/2.in', 'test_boards/hardest/2.out')
